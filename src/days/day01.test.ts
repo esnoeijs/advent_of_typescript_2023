@@ -16,16 +16,16 @@ treb7uchet`;
   });
 
   describe("Part 2", () => {
-    it("should return a result", async () => {
-      const input = "sample input";
-      const result = await day01.solver.part2(input);
-      expect(result).toBeDefined();
-    });
-
-    it.skip("should solve example input", async () => {
+    it("should solve example input", async () => {
       // Add your example input and expected output here
-      const exampleInput = ``;
-      const expected = 0;
+      const exampleInput = `two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen`;
+      const expected = 281;
       const result = await day01.solver.part2(exampleInput);
       expect(result).toBe(expected);
     });
