@@ -15,6 +15,7 @@ type CliOptions = {
   part?: PartNumber;
   variant?: string;
   inputPath?: string;
+  verbose?: boolean;
 };
 
 function parseArgs(argv: string[]): CliOptions {
@@ -30,6 +31,11 @@ function parseArgs(argv: string[]): CliOptions {
 
     if (arg === "--list") {
       options.list = true;
+      continue;
+    }
+
+    if (arg === "--verbose" || arg === "-v") {
+      options.verbose = true;
       continue;
     }
 
@@ -90,7 +96,8 @@ function printHelp(): void {
     + `      --day <n>         Select the day to run (defaults to latest)\n`
     + `      --part <1|2>      Run only a single part (defaults to both)\n`
     + `      --variant <name>  Input variant, defaults to \"puzzle\"\n`
-    + `      --input <path>    Override input file path`);
+    + `      --input <path>    Override input file path\n`
+    + `  -v, --verbose         Show detailed error messages with stack traces`);
 }
 
 function printAvailableDays(days: number[]): void {
@@ -100,6 +107,16 @@ function printAvailableDays(days: number[]): void {
   }
 
   console.log(`Available days: ${days.map(formatDayId).join(", ")}`);
+}
+
+function formatError(error: unknown, verbose: boolean): string {
+  if (error instanceof Error) {
+    if (verbose && error.stack) {
+      return error.stack;
+    }
+    return error.message;
+  }
+  return String(error);
 }
 
 async function runCLI(): Promise<number> {
@@ -154,7 +171,9 @@ async function runCLI(): Promise<number> {
       console.log(`Day ${formatDayId(targetDay)} Part ${part}: ${String(result)}`);
     } catch (error) {
       exitCode = 1;
-      console.error(`Error running Day ${formatDayId(targetDay)} Part ${part}:`, error);
+      const errorMessage = formatError(error, options.verbose ?? false);
+      console.error(`Error running Day ${formatDayId(targetDay)} Part ${part}:`);
+      console.error(errorMessage);
     }
   }
 
