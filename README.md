@@ -42,7 +42,7 @@ pnpm test:watch    # Run tests in watch mode
 - `src/days/dayXX.ts` — one file per puzzle day that exports a default `DayModule`.
 - `src/days/dayXX.test.ts` — test file for each day with example inputs.
 - `src/days/index.ts` — central registry that auto-registers all day modules.
-- `inputs/dayXX.txt` — default location for each day's puzzle input (add variants like `day01.sample.txt`).
+- `inputs/dayXX.txt` — default location for each day's puzzle input.
 - `src/lib/input.ts` — helpers for resolving and loading input files.
 - `src/lib/utils.ts` — shared utility functions.
 - `src/cli.ts` — the command-line entry point that dispatches to the chosen solver.
@@ -69,7 +69,6 @@ By default, running without `--part` executes both parts sequentially and prints
     --list            List the available days discovered at runtime
     --day <n>         Select the day to run (defaults to the latest available)
     --part <1|2>      Run only part 1 or part 2 (defaults to both)
-    --variant <name>  Choose an input variant, e.g. "sample" (defaults to "puzzle")
     --input <path>    Override the input file location
 -v, --verbose         Show detailed error messages with stack traces
 ```

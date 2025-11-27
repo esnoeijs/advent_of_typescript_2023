@@ -13,7 +13,6 @@ type CliOptions = {
   list?: boolean;
   day?: number;
   part?: PartNumber;
-  variant?: string;
   inputPath?: string;
   verbose?: boolean;
 };
@@ -68,20 +67,6 @@ function parseArgs(argv: string[]): CliOptions {
       continue;
     }
 
-    if (arg.startsWith("--variant=")) {
-      options.variant = arg.slice("--variant=".length);
-      continue;
-    }
-
-    if (arg === "--variant" && i + 1 < argv.length) {
-      const nextArg = argv[i + 1];
-      if (nextArg) {
-        options.variant = nextArg;
-        i += 1;
-      }
-      continue;
-    }
-
     if (arg.startsWith("--input=")) {
       options.inputPath = arg.slice("--input=".length);
       continue;
@@ -112,7 +97,6 @@ function printHelp(): void {
     + `      --list            List the available days\n`
     + `      --day <n>         Select the day to run (defaults to latest)\n`
     + `      --part <1|2>      Run only a single part (defaults to both)\n`
-    + `      --variant <name>  Input variant, defaults to \"puzzle\"\n`
     + `      --input <path>    Override input file path\n`
     + `  -v, --verbose         Show detailed error messages with stack traces`);
 }
@@ -178,11 +162,10 @@ async function runCLI(): Promise<number> {
   }
 
   const partsToRun = options.part ? [options.part] : [1, 2];
-  const variant = options.variant ?? "puzzle";
 
   const input = options.inputPath
     ? await readFile(options.inputPath, "utf8")
-    : await loadInput({ day: targetDay, variant, cwd: process.cwd(), fallback: "" });
+    : await loadInput({ day: targetDay, cwd: process.cwd(), fallback: "" });
 
   let exitCode = 0;
 
