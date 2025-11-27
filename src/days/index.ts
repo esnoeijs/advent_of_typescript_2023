@@ -1,6 +1,6 @@
 import day01 from "./day01";
 import type { DayModule } from "./types";
-import { formatDayId } from "../lib/day";
+import { formatDayId } from "../lib/utils";
 
 const registry = new Map<number, DayModule>();
 

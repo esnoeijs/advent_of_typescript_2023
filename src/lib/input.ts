@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { formatDayId } from "./day";
+import { formatDayId } from "./utils";
 
 export interface LoadInputOptions {
   day: number;
