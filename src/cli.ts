@@ -23,6 +23,7 @@ function parseArgs(argv: string[]): CliOptions {
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
+    if (!arg) continue;
 
     if (arg === "--help" || arg === "-h") {
       options.help = true;
@@ -45,7 +46,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
 
     if (arg === "--day" && i + 1 < argv.length) {
-      options.day = Number.parseInt(argv[++i] ?? "", 10);
+      const nextArg = argv[i + 1];
+      if (nextArg) {
+        options.day = Number.parseInt(nextArg, 10);
+        i += 1;
+      }
       continue;
     }
 
@@ -55,7 +60,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
 
     if (arg === "--part" && i + 1 < argv.length) {
-      options.part = parsePart(argv[++i] ?? "");
+      const nextArg = argv[i + 1];
+      if (nextArg) {
+        options.part = parsePart(nextArg);
+        i += 1;
+      }
       continue;
     }
 
@@ -65,7 +74,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
 
     if (arg === "--variant" && i + 1 < argv.length) {
-      options.variant = argv[++i];
+      const nextArg = argv[i + 1];
+      if (nextArg) {
+        options.variant = nextArg;
+        i += 1;
+      }
       continue;
     }
 
@@ -75,7 +88,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
 
     if (arg === "--input" && i + 1 < argv.length) {
-      options.inputPath = argv[++i];
+      const nextArg = argv[i + 1];
+      if (nextArg) {
+        options.inputPath = nextArg;
+        i += 1;
+      }
     }
   }
 
@@ -140,7 +157,13 @@ async function runCLI(): Promise<number> {
     return 1;
   }
 
-  const targetDay = options.day ?? availableDays[availableDays.length - 1];
+  const lastDay = availableDays[availableDays.length - 1];
+  if (lastDay === undefined) {
+    console.error("No AoC days found. Add files under src/days/dayXX.ts to continue.");
+    return 1;
+  }
+
+  const targetDay = options.day ?? lastDay;
 
   if (!Number.isInteger(targetDay) || targetDay < 1 || targetDay > 25) {
     console.error("Invalid day provided. Expected an integer between 1 and 25.");

@@ -10,7 +10,12 @@
     "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "tsup.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "tsup.config.ts", "vitest.config.ts"]
 }
