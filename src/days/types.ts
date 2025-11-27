@@ -1,4 +1,4 @@
-export type DayResult = string | number | bigint | null | undefined;
+export type DayResult = string | number | bigint;
 
 export interface DaySolver {
   part1(input: string): DayResult | Promise<DayResult>;
