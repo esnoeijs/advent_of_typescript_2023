@@ -5,6 +5,7 @@ import { formatDayId } from "../lib/utils";
 // When adding a new day, simply add: import dayXX from "./dayXX";
 import day01 from "./day01";
 import day02 from "./day02";
+import day03 from "./day03";
 
 const registry = new Map<number, DayModule>();
 
@@ -12,6 +13,7 @@ const registry = new Map<number, DayModule>();
 const dayModules: DayModule[] = [
   day01,
   day02,
+  day03,
   // Add new days here
 ];
 
