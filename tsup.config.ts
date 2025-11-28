@@ -1,7 +1,13 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/cli.ts"],
+  entry: [
+    "src/cli.ts",
+    "src/days/index.ts",
+    "src/days/types.ts",
+    "src/days/day*.ts",
+    "src/lib/*.ts",
+  ],
   format: ["esm"],
   target: "node20",
   platform: "node",
@@ -14,4 +20,5 @@ export default defineConfig({
   splitting: false,
   dts: false,
   minify: false,
+  bundle: false, // Don't bundle - preserve file structure
 });

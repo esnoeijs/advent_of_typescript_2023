@@ -1,4 +1,4 @@
-import type { DayModule } from "./types";
+import type { DayModule } from "./types.js";
 
 class GameInvalid extends Error {}
 

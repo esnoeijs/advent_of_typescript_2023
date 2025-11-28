@@ -1,4 +1,4 @@
-import type { DayModule } from "./types";
+import type { DayModule } from "./types.js";
 
 const solver: DayModule["solver"] = {
   async part1(_input: string) {

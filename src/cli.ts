@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 import process from "node:process";
 
-import { formatDayId, getDay, listAvailableDays } from "./days";
-import { loadInput } from "./lib/input";
+import { formatDayId, getDay, listAvailableDays } from "./days/index.js";
+import { loadInput } from "./lib/input.js";
 
 const PARTS = new Set([1, 2] as const);
 
@@ -124,7 +124,7 @@ async function runCLI(): Promise<number> {
   const [, , ...argv] = process.argv;
   const options = parseArgs(argv);
 
-  const availableDays = listAvailableDays();
+  const availableDays = await listAvailableDays();
 
   if (options.help) {
     printHelp();
@@ -154,7 +154,7 @@ async function runCLI(): Promise<number> {
     return 1;
   }
 
-  const module = getDay(targetDay);
+  const module = await getDay(targetDay);
 
   if (!module) {
     console.error(`Day ${formatDayId(targetDay)} is not implemented yet.`);

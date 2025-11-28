@@ -1,36 +1,83 @@
-import type { DayModule } from "./types";
-import { formatDayId } from "../lib/utils";
-
-// Import all day modules here
-// When adding a new day, simply add: import dayXX from "./dayXX";
-import day01 from "./day01";
-import day02 from "./day02";
-import day03 from "./day03";
+import { readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { pathToFileURL } from "node:url";
+import type { DayModule } from "./types.js";
+import { formatDayId } from "../lib/utils.js";
 
 const registry = new Map<number, DayModule>();
+let initialized = false;
 
-// Auto-register all imported day modules
-const dayModules: DayModule[] = [
-  day01,
-  day02,
-  day03,
-  // Add new days here
-];
-
-for (const module of dayModules) {
-  if (registry.has(module.id)) {
-    throw new Error(`Day ${formatDayId(module.id)} is registered more than once.`);
+/**
+ * Automatically discovers and loads all dayXX.ts modules in the days directory.
+ * This function is called lazily on first access to the registry.
+ */
+async function initializeRegistry(): Promise<void> {
+  if (initialized) return;
+  
+  const currentFile = fileURLToPath(import.meta.url);
+  const daysDir = dirname(currentFile);
+  
+  try {
+    const files = await readdir(daysDir);
+    
+    // Filter for dayXX.ts files (or dayXX.js in built code)
+    const dayFiles = files.filter((file) => {
+      return /^day\d{2}\.(ts|js)$/.test(file);
+    });
+    
+    // Dynamically import each day module
+    for (const file of dayFiles) {
+      const modulePath = join(daysDir, file);
+      
+      try {
+        // Convert file path to file URL for proper ESM import
+        const moduleUrl = pathToFileURL(modulePath).href;
+        const module = await import(moduleUrl);
+        const dayModule: DayModule = module.default;
+        
+        if (!dayModule || typeof dayModule.id !== "number") {
+          console.warn(`Skipping ${file}: missing or invalid default export`);
+          continue;
+        }
+        
+        if (registry.has(dayModule.id)) {
+          throw new Error(
+            `Day ${formatDayId(dayModule.id)} is registered more than once (file: ${file})`
+          );
+        }
+        
+        registry.set(dayModule.id, dayModule);
+      } catch (error) {
+        // Log import errors but continue loading other modules
+        console.warn(`Failed to load ${file}:`, error instanceof Error ? error.message : error);
+      }
+    }
+    
+    initialized = true;
+  } catch (error) {
+    throw new Error(
+      `Failed to initialize day registry: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
-
-  registry.set(module.id, module);
 }
 
 export { formatDayId };
 
-export function listAvailableDays(): number[] {
+/**
+ * Returns a sorted list of all available day numbers.
+ * Automatically discovers day modules on first call.
+ */
+export async function listAvailableDays(): Promise<number[]> {
+  await initializeRegistry();
   return Array.from(registry.keys()).sort((a, b) => a - b);
 }
 
-export function getDay(day: number): DayModule | undefined {
+/**
+ * Retrieves the module for a specific day.
+ * Automatically discovers day modules on first call.
+ */
+export async function getDay(day: number): Promise<DayModule | undefined> {
+  await initializeRegistry();
   return registry.get(day);
 }

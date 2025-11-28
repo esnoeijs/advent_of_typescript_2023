@@ -1,4 +1,4 @@
-import type { DayModule } from "./types";
+import type { DayModule } from "./types.js";
 
 function detectNumber(line: string, first: number): string | false {
   const numChar = line.charAt(first);
