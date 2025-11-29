@@ -5,7 +5,7 @@ export default defineConfig({
     "src/cli.ts",
     "src/days/index.ts",
     "src/days/types.ts",
-    "src/days/day*.ts",
+    "src/days/day[0-9][0-9].ts",
     "src/lib/*.ts",
   ],
   format: ["esm"],
